@@ -6,6 +6,8 @@ import { spawn } from "child_process";
 import WebSocket from "ws";
 import ffmpegPath from "ffmpeg-static";
 
+import { Converter } from "./src/Converter.mjs";
+
 let ws = null;
 let ff = null;
 
@@ -15,21 +17,31 @@ function start() {
   ws = new WebSocket("ws://localhost:8080/client");
 
   ws.on("open", () => {
-    ff = spawn(ffmpegPath, [
-      "-f", "gdigrab", "-framerate", "30",
-      "-offset_x", "0", "-offset_y", "0", "-video_size", "1920x1080",
-      "-i", "desktop",
-      "-vf", "scale=trunc(iw/2)*2:trunc(ih/2)*2",
-      "-pix_fmt", "yuv420p",
-      "-f", "mpegts", "-codec:v", "mpeg1video",
-      "-b:v", "2000k", "-bf", "0", "-",
-    ]);
+    const converter = new Converter({
+      fps: 144,
+      window_x: 0,
+      window_y: 0,
+      window_res: "1920x1080",
+
+      filter: null,
+      format: "yuv420p",
+      codec: null,
+      bitrate: "10000k",
+      bFrames: 0,
+      stdout: "-"
+    });
+
+    ff = converter.GetProcess();
+
+    if (!ff) {
+      throw new Error("Could not get process");
+    }
 
     ff.stdout.on("data", (chunk) => {
       if (ws && ws.readyState === WebSocket.OPEN) ws.send(chunk);
     });
     ff.stderr.on("data", (d) => console.log("ffmpeg:", d.toString()));
-    ff.on("close", (code) => { console.log("ffmpeg exited:", code); ff = null; });
+    ff.on("close", (code) => { /*console.log("ffmpeg exited:", code);*/ ff = null; });
   });
 
   ws.on("close", stop);

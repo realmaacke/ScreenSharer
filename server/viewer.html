@@ -2,15 +2,25 @@
 <meta charset="utf-8">
 <title>Viewer</title>
 <style>
-  body { margin: 0; background: #000; }
-  canvas { width: 100vw; height: 100vh; object-fit: contain; display: block; }
+  body { margin: 0; padding: 0; background: #000; }
+  video { width: 100vw; height: 100vh; object-fit: contain; display: block; }
 </style>
-<canvas id="screen"></canvas>
-<script src="https://cdn.jsdelivr.net/gh/phoboslab/jsmpeg@master/jsmpeg.min.js"></script>
+<video id="screen" autoplay muted></video>
+<script src="https://cdn.jsdelivr.net/npm/mpegts.js@1/dist/mpegts.js"></script>
 <script>
   const proto = location.protocol === "https:" ? "wss" : "ws";
-  new JSMpeg.Player(`${proto}://${location.host}/viewer`, {
-    canvas: document.getElementById("screen"),
-    audio: false,
-  });
+  const player = mpegts.createPlayer(
+    {
+      type: "mpegts",
+      isLive: true,
+      url: `${proto}://${location.host}/viewer`,
+    },
+    {
+      enableStashBuffer: false,
+      liveBufferLatencyChasing: true,
+    }
+  );
+  player.attachMediaElement(document.getElementById("screen"));
+  player.load();
+  player.play();
 </script>

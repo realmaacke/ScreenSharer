@@ -25,6 +25,7 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "@ffmpeg-installer/ffmpeg": "^1.1.0",
     "ffmpeg-static": "^5.3.0",
     "systray2": "^2.1.4",
     "ws": "^8.22.0"

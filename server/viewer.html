@@ -1,0 +1,16 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Viewer</title>
+<style>
+  body { margin: 0; background: #000; }
+  canvas { width: 100vw; height: 100vh; object-fit: contain; display: block; }
+</style>
+<canvas id="screen"></canvas>
+<script src="https://cdn.jsdelivr.net/gh/phoboslab/jsmpeg@master/jsmpeg.min.js"></script>
+<script>
+  const proto = location.protocol === "https:" ? "wss" : "ws";
+  new JSMpeg.Player(`${proto}://${location.host}/viewer`, {
+    canvas: document.getElementById("screen"),
+    audio: false,
+  });
+</script>

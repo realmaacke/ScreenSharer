@@ -1,5 +1,5 @@
 ### ScreenSharer
-
+viewer: http://localhost:8080/client 
 ## URL is hardcoded for now
 
 1. go into server/ and do: npm run start

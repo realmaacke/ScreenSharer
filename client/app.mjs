@@ -2,10 +2,7 @@ import pkg from "systray2";
 import os from 'os'
 const SysTray = pkg.default ?? pkg;
 
-import { spawn } from "child_process";
 import WebSocket from "ws";
-import ffmpegPath from "ffmpeg-static";
-
 import { Converter } from "./src/Converter.mjs";
 
 let ws = null;

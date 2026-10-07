@@ -15,4 +15,4 @@ ffmpeg (install in powershell with "winget install Gyan.FFmpeg")
 9. replace localhost with internal ip address if not on the same machine.
 
 ## Compatibility
-Only been tested on Windows 10 with a nvidia gpu.
+Only been tested on Windows 10 with a nvec encoding

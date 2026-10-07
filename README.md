@@ -1,6 +1,18 @@
 ### ScreenSharer
-## URL is hardcoded for now
 
-1. go into server/ and do: npm run start
-2. execute the exe or go into client and do: npm run start
-3. Port 8080, use localhost:port/client in the browser
+## dependencies
+
+
+## Setup
+1. clone repo
+2. cd into repo root
+3. cd into server/
+4. do npm install
+5. do: npm start
+6. either cd into client/ and do: npm install && npm start or execute the .exe file
+7. The application will contain a identifier.
+8. go to http://localhost:8080/ and put in the client identifier.
+9. replace localhost with internal ip address if not on the same machine.
+
+## Compatibility
+Only been tested on Windows 10 with a nvidia gpu.

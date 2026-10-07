@@ -8,10 +8,25 @@ import { Converter } from "./src/Converter.mjs";
 let ws = null;
 let ff = null;
 
+// This is very stupid, not secure at all.
+// Collisions are bound to happen.
+const unique_id = generateId();
+function generateId() {
+  let begining = "";
+  let ending = "";
+
+  for (let i = 0; i < 4; i++) {
+    begining += Math.floor(Math.random() * 10);
+    ending += Math.floor(Math.random() * 10);
+  }
+
+  return String(begining) + "-" + String(ending);
+}
+
 
 function start() {
   if (ws) return;
-  ws = new WebSocket("ws://localhost:8080/client");
+  ws = new WebSocket("ws://localhost:8080/client?id=" + unique_id);
 
   ws.on("open", () => {
     const converter = new Converter({
@@ -53,6 +68,12 @@ function stop() {
 
 const items = [
   {
+    title: "Connect id:" + String(unique_id),
+    tooltip: "id to connect the viewer with",
+    checked: false,
+    enabled: true
+  },
+  {
     title: "Start",
     tooltip: "Start to share screen",
     on_click_identifier: "on_start",
@@ -60,7 +81,7 @@ const items = [
     enabled: true,
 
     click() {
-      const self = items[0];
+      const self = items[1];
       self.checked = !self.checked;
       systray.sendAction({
         type: 'update-item',
@@ -76,7 +97,7 @@ const items = [
     enabled: true,
 
     click() {
-      const self = items[1];
+      const self = items[2];
       self.checked = !self.checked;
       systray.sendAction({
         type: 'update-item',
@@ -92,14 +113,12 @@ const items = [
     enabled: true,
 
     click() {
-      const self = items[2];
+      const self = items[3];
       self.checked = !self.checked;
       systray.sendAction({
         type: 'update-item',
         item: self
       });
-
-      // systray.kill(false)
     }
   }
 ]

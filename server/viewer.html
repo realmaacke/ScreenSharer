@@ -2,25 +2,60 @@
 <meta charset="utf-8">
 <title>Viewer</title>
 <style>
-  body { margin: 0; padding: 0; background: #000; }
+  body { margin: 0; padding: 0; background: black; }
+  main { margin: 0; padding: 0; background: black; }
   video { width: 100vw; height: 100vh; object-fit: contain; display: block; }
 </style>
-<video id="screen" autoplay muted></video>
+
+<dialog id="gate">
+  <p>Enter client id, format: 0000-0000</p>
+  <input id="identifier" type="text">
+  <button id="ok">OK</button>
+</dialog>
+
+<main id="main" hidden>
+  <video id="screen" autoplay muted></video>
+</main>
+
 <script src="https://cdn.jsdelivr.net/npm/mpegts.js@1/dist/mpegts.js"></script>
 <script>
-  const proto = location.protocol === "https:" ? "wss" : "ws";
-  const player = mpegts.createPlayer(
-    {
-      type: "mpegts",
-      isLive: true,
-      url: `${proto}://${location.host}/viewer`,
-    },
-    {
-      enableStashBuffer: false,
-      liveBufferLatencyChasing: true,
-    }
-  );
-  player.attachMediaElement(document.getElementById("screen"));
-  player.load();
-  player.play();
+  const gate = document.getElementById("gate");
+  const main = document.getElementById("main");
+  const video = document.getElementById("screen");
+  let player = null;
+
+  gate.addEventListener("cancel", e => e.preventDefault()); // block Esc
+  gate.showModal();
+
+  document.getElementById("ok").onclick = () => {
+    const id = document.getElementById("identifier").value.trim();
+    const proto = location.protocol === "https:" ? "wss" : "ws";
+
+    player = mpegts.createPlayer(
+      {
+        type: "mpegts",
+        isLive: true,
+        url: `${proto}://${location.host}/viewer?id=${encodeURIComponent(id)}`,
+      },
+      {
+        enableStashBuffer: false,
+        liveBufferLatencyChasing: true,
+      }
+    );
+
+    player.on(mpegts.Events.ERROR, () => {
+      player.destroy();
+      player = null;
+      main.hidden = true;
+      gate.showModal();
+      alert("Invalid or offline client id");
+    });
+
+    player.attachMediaElement(video);
+    player.load();
+    player.play();
+
+    gate.close();
+    main.hidden = false;
+  };
 </script>

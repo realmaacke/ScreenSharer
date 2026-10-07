@@ -1,7 +1,7 @@
 ### ScreenSharer
 
 ## dependencies
-
+ffmpeg (install in powershell with "winget install Gyan.FFmpeg")
 
 ## Setup
 1. clone repo
